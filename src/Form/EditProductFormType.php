@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Product;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -18,31 +20,68 @@ class EditProductFormType extends AbstractType
     {
         $builder
             ->add('title',TextType::class,[
-                'label'=>'Title (from class)',
+                'label'=>'Title ',
                 'required'=>false, //default value is true
                 'constraints'=>[
                     new NotBlank()
+                ],
+                'attr'=>[
+                    'class'=>'form-control'
                 ]
             ])
             ->add('price',NumberType::class,[
-                'label'=>'Price (from class)',
+                'label'=>'Price ',
                 'required'=>true, //default value is true
                 'scale'=>2,
                 'html5'=>true,
                 'attr'=>[
-                    'step'=>'0.01'
+                    'step'=>'0.01',
+                    'min'=>0,
+                    'class'=>'form-control'
                 ]
             ])
             ->add('quantity',IntegerType::class,[
-                'label'=>'Quantity (from class)',
-                'required'=>true //default value is true
+                'label'=>'Quantity ',
+                'required'=>true, //default value is true
+                'attr'=>[
+                    'class'=>'form-control'
+                ]
             ])
             ->add('description',TextareaType::class,[
-                'label'=>'Description (from class)',
-                'required'=>false //default value is true
+                'label'=>'Description ',
+                'required'=>true, //default value is true
+                'attr'=>[
+                    'class'=>'form-control'
+                ]
             ])
-            ->add('isPublished')
-            ->add('isDeleted')
+            ->add('newImage',FileType::class,[
+                'label'=>'Choose new image',
+                'required'=>false,
+                'mapped'=>false,
+                'attr'=>[
+                    'class'=>'form-control-file'
+                ]
+            ])
+            ->add('isPublished',CheckboxType::class,[
+                'label'=>'Published',
+                'required'=>false, //default value is true
+                'attr'=>[
+                    'class'=>'form-check-input'
+                ],
+                'label_attr'=>[
+                    'class'=>'form-check-label'
+                ]
+            ])
+            ->add('isDeleted',CheckboxType::class,[
+                'label'=>'Deleted',
+                'required'=>false, //default value is true
+                'attr'=>[
+                    'class'=>'form-check-input'
+                ],
+                'label_attr'=>[
+                    'class'=>'form-check-label'
+                ]
+            ])
         ;
     }
 

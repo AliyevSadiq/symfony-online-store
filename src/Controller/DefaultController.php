@@ -36,42 +36,4 @@ class DefaultController extends AbstractController
         ]);
     }
 
-//    #[Route('/product-add',name: 'product-add', methods: ['GET','POST'])]
-//    public function productAdd(Request $request): Response
-//    {
-//        $product=new Product();
-//        $product->setTitle('Product'.rand(1,100));
-//        $product->setDescription('Description'.rand(1,100));
-//        $product->setPrice(rand(10,1000));
-//        $product->setQuantity(rand(1,10));
-//
-//
-//        $this->entityManager->persist($product);
-//        $this->entityManager->flush();
-//        return $this->redirectToRoute('main_homepage');
-//
-//    }
-
-    #[Route('/edit-product/{product}', name: 'edit-product', requirements: ['product' => '\d+'], methods: ['GET', 'POST'])]
-    #[Route('/add-product', name: 'product-add', methods: ['GET', 'POST'])]
-    public function editProduct(Request $request, ?Product $product): Response
-    {
-        if (!isset($product)) {
-            $product = new Product();
-        }
-
-        $form = $this->createForm(EditProductFormType::class,$product);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($product);
-            $this->entityManager->flush();
-            return $this->redirectToRoute('edit-product',['product'=>$product->getId()]);
-        }
-
-        return $this->render('main/default/edit_product.html.twig', ['form' => $form->createView()]);
-    }
-
-
 }
