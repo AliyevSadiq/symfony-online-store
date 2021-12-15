@@ -6,30 +6,32 @@ namespace App\Form\Handler;
 
 use App\Entity\Product;
 use App\Utils\File\FileSaver;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Utils\Manager\ProductManager;
 use Symfony\Component\Form\FormInterface;
 
 class ProductFormHandler
 {
 
-    private EntityManagerInterface $entityManager;
-    private FileSaver $fileSaver;
 
-    public function __construct(EntityManagerInterface $entityManager, FileSaver $fileSaver)
+    private FileSaver $fileSaver;
+    private ProductManager $productManager;
+
+    public function __construct(ProductManager $productManager, FileSaver $fileSaver)
     {
-        $this->entityManager = $entityManager;
         $this->fileSaver = $fileSaver;
+        $this->productManager = $productManager;
     }
 
     public function editProcessForm(Product $product,FormInterface $form): Product
     {
-        $this->entityManager->persist($product);
+        $this->productManager->save($product);
 
         $newImageFile=$form->get('newImage')->getData();
 
-        $temp=$newImageFile ? $this->fileSaver->saveUploadInTempFile($newImageFile) : null;
-dd($temp);
-        $this->entityManager->flush();
+        $tempImageFilename=$newImageFile ? $this->fileSaver->saveUploadInTempFile($newImageFile) : null;
+
+        $this->productManager->updateProductImages($product,$tempImageFilename);
+        $this->productManager->save($product);
         return $product;
     }
 

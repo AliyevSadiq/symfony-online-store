@@ -36,7 +36,7 @@ class FileSaver
         try {
             $uploadedFile->move($this->uploadsTempDir,$fileName);
         }catch (FileException $exception){
-            dd($exception->getMessage());
+           //
         }
         return $fileName;
     }

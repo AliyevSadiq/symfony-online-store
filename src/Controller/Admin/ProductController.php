@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Form\EditProductFormType;
 use App\Form\Handler\ProductFormHandler;
 use App\Repository\ProductRepository;
+use App\Utils\Manager\ProductManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,8 +31,13 @@ class ProductController extends AbstractController
     #[Route('add', name: 'add', methods: ['GET', 'POST'])]
     public function save(Request $request,ProductFormHandler $handler, ?Product $product): Response
     {
+        if (!$product){
+            $product=new Product();
+        }
         $form = $this->createForm(EditProductFormType::class, $product);
         $form->handleRequest($request);
+
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product=$handler->editProcessForm($product,$form);
@@ -39,15 +45,17 @@ class ProductController extends AbstractController
            return $this->redirectToRoute('admin_product_edit',['product'=>$product->getId()]);
         }
        return $this->render('admin/product/edit.html.twig',[
+           'images'=>$product->getProductImages() ? $product->getProductImages()->getValues() : [],
           'form'=>$form->createView(),
            'product'=>$product
        ]);
     }
 
     #[Route('delete/{product}', name: 'delete', requirements: ['product' => '\d+'])]
-    public function delete(?Product $product): Response
+    public function delete(Product $product,ProductManager $productManager): Response
     {
-        //
+        $productManager->remove($product);
+        return $this->redirectToRoute('admin_product_list');
     }
 
 }
