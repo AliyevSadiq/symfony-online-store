@@ -31,7 +31,9 @@
                     Slug
                 </div>
                 <div class="col-md-11">
-                  {{ product.slug }}
+                    {% if product %}
+                        {{ product.slug }}
+                    {% endif %}
                 </div>
             </div>
 
@@ -91,11 +93,13 @@
 
                 {% for image in images %}
                     <div class="row mt-2">
-                        <div >
-                            <img src="{{ asset('uploads/images/products/' ~ product.id ~ '/' ~ image.filenameMiddle) }}" alt="{{ image.filenameMiddle }}"  style="width: 250px">
+                        <div>
+                            <img src="{{ asset('uploads/images/products/' ~ product.id ~ '/' ~ image.filenameMiddle) }}"
+                                 alt="{{ image.filenameMiddle }}" style="width: 250px">
                         </div>
                         <div class="col-md-7">
-                            <a href="{{ path('admin_product_image_delete',{image:image.id}) }}" class="btn btn-outline-info">
+                            <a href="{{ path('admin_product_image_delete',{image:image.id}) }}"
+                               class="btn btn-outline-info">
                                 DELETE
                             </a>
                         </div>
@@ -128,16 +132,16 @@
             </div>
 
             <hr/>
-           {% include 'admin/embed/_card/_form_buttons.html.twig' with {
-               'sectionItemsListUrl': path('admin_product_list'),
-               'entity': product
-           } %}
+            {% include 'admin/embed/_card/_form_buttons.html.twig' with {
+                'sectionItemsListUrl': path('admin_product_list'),
+                'entity': product
+            } %}
             {{ form_rest(form) }}
             {{ form_end(form) }}
         </div>
     </div>
 
-    {% if product.id %}
+    {% if product and product.id %}
         {% include 'admin/embed/utils/_modal.html.twig' with{
             'modalId': 'approveDeleteModal',
             'modalTitle': 'Are you sure?',

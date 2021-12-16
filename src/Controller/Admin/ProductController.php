@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
+use App\Form\DTO\EditProductModel;
 use App\Form\EditProductFormType;
 use App\Form\Handler\ProductFormHandler;
 use App\Repository\ProductRepository;
@@ -17,11 +18,11 @@ class ProductController extends AbstractController
 {
 
 
-
     #[Route('list', name: 'list')]
     public function list(ProductRepository $productRepository): Response
     {
         $products = $productRepository->findBy(['isDeleted' => false], ['id' => 'DESC']);
+
         return $this->render('admin/product/list.html.twig', [
             'products' => $products
         ]);
@@ -29,30 +30,29 @@ class ProductController extends AbstractController
 
     #[Route('edit/{product}', name: 'edit', requirements: ['product' => '\d+'], methods: ['GET', 'POST'])]
     #[Route('add', name: 'add', methods: ['GET', 'POST'])]
-    public function save(Request $request,ProductFormHandler $handler, ?Product $product): Response
+    public function save(Request $request, ProductFormHandler $handler, ?Product $product): Response
     {
-        if (!$product){
-            $product=new Product();
-        }
-        $form = $this->createForm(EditProductFormType::class, $product);
+        $productModel = EditProductModel::makeFromProduct($product);
+
+        $form = $this->createForm(EditProductFormType::class, $productModel);
+
         $form->handleRequest($request);
 
-
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $product=$handler->editProcessForm($product,$form);
 
-           return $this->redirectToRoute('admin_product_edit',['product'=>$product->getId()]);
+            $product = $handler->editProcessForm($productModel, $form);
+
+            return $this->redirectToRoute('admin_product_edit', ['product' => $product->getId()]);
         }
-       return $this->render('admin/product/edit.html.twig',[
-           'images'=>$product->getProductImages() ? $product->getProductImages()->getValues() : [],
-          'form'=>$form->createView(),
-           'product'=>$product
-       ]);
+        return $this->render('admin/product/edit.html.twig', [
+            'images' => $product  ? $product->getProductImages()->getValues() : [],
+            'form' => $form->createView(),
+            'product' => $product
+        ]);
     }
 
     #[Route('delete/{product}', name: 'delete', requirements: ['product' => '\d+'])]
-    public function delete(Product $product,ProductManager $productManager): Response
+    public function delete(Product $product, ProductManager $productManager): Response
     {
         $productManager->remove($product);
         return $this->redirectToRoute('admin_product_list');
