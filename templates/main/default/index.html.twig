@@ -101,4 +101,9 @@
             </div>
         </div>
     </div>
+    {{ render(controller(
+        'App\\Controller\\Main\\EmbedController::showSimilarProducts',{
+            'min': 4
+        }
+    )) }}
 {% endblock %}

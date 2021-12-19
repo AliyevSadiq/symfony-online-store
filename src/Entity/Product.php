@@ -82,6 +82,11 @@ class Product
      */
     private $slug;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products", fetch="EAGER")
+     */
+    private $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -221,6 +226,18 @@ class Product
     public function setUuid($uuid): self
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

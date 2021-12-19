@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Product;
 use App\Form\DTO\EditProductModel;
-use App\Form\EditProductFormType;
+use App\Form\Admin\EditProductFormType;
 use App\Form\Handler\ProductFormHandler;
 use App\Repository\ProductRepository;
 use App\Utils\Manager\ProductManager;
@@ -42,7 +42,13 @@ class ProductController extends AbstractController
 
             $product = $handler->editProcessForm($productModel, $form);
 
+            $this->addFlash('success','Your changes were saved');
+
             return $this->redirectToRoute('admin_product_edit', ['product' => $product->getId()]);
+        }
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('warning','Something is wrong. Please enter valid data!!!');
         }
         return $this->render('admin/product/edit.html.twig', [
             'images' => $product  ? $product->getProductImages()->getValues() : [],
@@ -55,6 +61,9 @@ class ProductController extends AbstractController
     public function delete(Product $product, ProductManager $productManager): Response
     {
         $productManager->remove($product);
+
+        $this->addFlash('warning','Product were saved');
+
         return $this->redirectToRoute('admin_product_list');
     }
 

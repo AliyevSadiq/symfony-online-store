@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Admin;
 
-use App\Entity\Product;
+use App\Entity\Category;
 use App\Form\DTO\EditProductModel;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -23,16 +24,24 @@ class EditProductFormType extends AbstractType
             ->add('title',TextType::class,[
                 'label'=>'Title ',
                 'required'=>false, //default value is true
-                'constraints'=>[
-                    new NotBlank()
-                ],
+//                'constraints'=>[
+//                    new NotBlank()
+//                ],
+                'attr'=>[
+                    'class'=>'form-control'
+                ]
+            ])->add('category',EntityType::class,[
+                'label'=>'Category',
+                'required'=>false,
+                'class'=>Category::class,
+                'choice_label'=>'title',
                 'attr'=>[
                     'class'=>'form-control'
                 ]
             ])
             ->add('price',NumberType::class,[
                 'label'=>'Price ',
-                'required'=>true, //default value is true
+                'required'=>false, //default value is true
                 'scale'=>2,
                 'html5'=>true,
                 'attr'=>[
@@ -43,14 +52,14 @@ class EditProductFormType extends AbstractType
             ])
             ->add('quantity',IntegerType::class,[
                 'label'=>'Quantity ',
-                'required'=>true, //default value is true
+                'required'=>false, //default value is true
                 'attr'=>[
                     'class'=>'form-control'
                 ]
             ])
             ->add('description',TextareaType::class,[
                 'label'=>'Description ',
-                'required'=>true, //default value is true
+                'required'=>false, //default value is true
                 'attr'=>[
                     'class'=>'form-control'
                 ]
