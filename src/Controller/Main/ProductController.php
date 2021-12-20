@@ -9,8 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-    #[Route('/product/{uuid?}', name: 'main_product_show')]
-    public function index(?Product $product): Response
+    #[Route('/product/{uuid}', name: 'main_product_show')]
+    public function index(Product $product): Response
     {
         return $this->render('main/product/show.html.twig', compact('product'));
     }

@@ -22,6 +22,7 @@ class Product
         $this->isPublished=false;
         $this->isDeleted=false;
         $this->productImages = new ArrayCollection();
+        $this->cartProducts = new ArrayCollection();
     }
 
     /**
@@ -86,6 +87,11 @@ class Product
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products", fetch="EAGER")
      */
     private $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CartProduct::class, mappedBy="product", orphanRemoval=true)
+     */
+    private $cartProducts;
 
     public function getId(): ?int
     {
@@ -238,6 +244,36 @@ class Product
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CartProduct[]
+     */
+    public function getCartProducts(): Collection
+    {
+        return $this->cartProducts;
+    }
+
+    public function addCartProduct(CartProduct $cartProduct): self
+    {
+        if (!$this->cartProducts->contains($cartProduct)) {
+            $this->cartProducts[] = $cartProduct;
+            $cartProduct->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartProduct(CartProduct $cartProduct): self
+    {
+        if ($this->cartProducts->removeElement($cartProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($cartProduct->getProduct() === $this) {
+                $cartProduct->setProduct(null);
+            }
+        }
 
         return $this;
     }
