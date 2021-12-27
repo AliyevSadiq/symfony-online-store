@@ -53,3 +53,4 @@ security:
         - { path: ^/admin/login }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/cart, roles: ROLE_USER }
